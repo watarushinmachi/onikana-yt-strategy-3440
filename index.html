@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>オニカナ様 YouTube戦略提案書</title>
+<style>
+  :root{
+    --ink:#1d1d1f;
+    --ink2:#33332f;
+    --gray:#73726c;
+    --line:#e4e2dc;
+    --soft:#f5f3ee;
+    --soft2:#ebe8e0;
+    --accent:#9a4b34;     /* muted terracotta — 差し色は1色だけ */
+    --good:#3f6b4f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:#0f0f0e;
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+  }
+  #stage{
+    position:fixed;top:50%;left:50%;
+    width:1920px;height:1080px;
+    transform-origin:center center;
+  }
+  .slide{
+    position:absolute;top:0;left:0;
+    width:1920px;height:1080px;
+    background:#fff;
+    padding:96px 130px;
+    opacity:0;visibility:hidden;
+    transition:opacity .35s ease;
+    display:flex;flex-direction:column;
+  }
+  .slide.active{opacity:1;visibility:visible;}
+
+  /* ---- shared typography ---- */
+  .eyebrow{
+    font-size:20px;letter-spacing:.4em;color:var(--accent);
+    font-weight:700;margin-bottom:18px;
+  }
+  h1.title{font-size:46px;font-weight:800;color:var(--ink);line-height:1.4;}
+  h1.title .u{
+    background:linear-gradient(transparent 62%, #e7d9cf 62%);padding:0 2px;
+  }
+  .sec-head{display:flex;align-items:baseline;gap:22px;border-bottom:2px solid var(--ink);
+    padding-bottom:20px;margin-bottom:34px;}
+  .sec-head .no{font-size:22px;font-weight:800;color:var(--accent);letter-spacing:.12em;}
+  .sec-head h2{font-size:38px;font-weight:800;color:var(--ink);line-height:1.2;}
+  .sec-head .lead{margin-left:auto;font-size:18px;color:var(--gray);max-width:560px;text-align:right;line-height:1.6;}
+
+  h3{font-size:24px;font-weight:800;color:var(--ink2);margin:0 0 16px;
+     padding-left:14px;border-left:5px solid var(--accent);line-height:1.35;}
+  h4{font-size:20px;font-weight:700;color:var(--ink2);margin:0 0 10px;}
+  p{font-size:21px;line-height:1.8;color:var(--ink2);}
+  strong{color:var(--ink);font-weight:700;}
+  .em{color:var(--accent);font-weight:700;}
+  .body{flex:1;min-height:0;}
+
+  /* ---- columns ---- */
+  .cols{display:grid;gap:40px;height:100%;}
+  .cols.c2{grid-template-columns:1fr 1fr;}
+  .cols.c2-7{grid-template-columns:1.15fr 0.85fr;}
+  .cols.c3{grid-template-columns:repeat(3,1fr);}
+  .cols.c4{grid-template-columns:repeat(4,1fr);}
+
+  /* ---- tables ---- */
+  table{width:100%;border-collapse:collapse;font-size:18.5px;}
+  th{background:var(--ink);color:#fff;text-align:left;padding:13px 18px;font-weight:700;}
+  td{padding:12px 18px;border:1px solid var(--line);vertical-align:top;line-height:1.55;color:var(--ink2);}
+  tbody tr:nth-child(even){background:var(--soft);}
+  .pill{display:inline-block;background:var(--soft2);color:var(--ink2);
+    border-radius:30px;padding:2px 16px;font-size:17px;font-weight:700;}
+  .score{color:var(--accent);font-weight:800;font-size:24px;text-align:center;}
+
+  /* ---- callout ---- */
+  .callout{background:var(--soft);border:1px solid var(--line);border-left:6px solid var(--accent);
+    border-radius:6px;padding:26px 32px;}
+  .callout.dark{background:var(--ink);border-color:var(--ink);color:#f2efe9;}
+  .callout.dark strong{color:#fff;}
+  .callout .label{font-size:15px;font-weight:800;letter-spacing:.18em;color:var(--accent);
+    text-transform:uppercase;margin-bottom:10px;display:block;}
+  .callout p{font-size:21px;}
+  .callout.dark p{color:#e7e4dd;}
+
+  /* ---- flow ---- */
+  .flow{display:flex;flex-direction:column;gap:6px;}
+  .flow .step{display:flex;align-items:center;gap:20px;}
+  .flow .ico{flex:0 0 46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;
+    font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;}
+  .flow .txt strong{display:block;font-size:21px;color:var(--ink);}
+  .flow .txt span{font-size:17px;color:var(--gray);}
+  .flow .arrow{margin-left:22px;color:var(--accent);font-size:22px;line-height:.6;}
+
+  /* ---- cards ---- */
+  .card{border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:8px;
+    padding:26px 28px;display:flex;flex-direction:column;}
+  .card h4{font-size:22px;color:var(--ink);}
+  .card .role{font-size:18px;color:var(--gray);margin:4px 0 16px;}
+  .card .tag{font-size:17px;color:var(--accent);font-weight:700;line-height:1.7;}
+  .card ul{margin:6px 0 0 20px;font-size:18px;color:var(--ink2);line-height:1.85;}
+
+  /* ---- phase ---- */
+  .phase{border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;height:100%;}
+  .phase .ph{background:var(--ink);color:#fff;padding:16px 22px;}
+  .phase .ph .t{font-size:21px;font-weight:800;}
+  .phase .ph .d{font-size:15px;color:#cfcabf;letter-spacing:.1em;margin-top:2px;}
+  .phase .pb{padding:20px 22px;flex:1;}
+  .phase ul{margin:0 0 14px 18px;font-size:17px;line-height:1.7;color:var(--ink2);}
+  .phase table{font-size:16px;}
+  .phase td{padding:8px 12px;}
+
+  ul.clean{margin:6px 0 0 22px;font-size:21px;line-height:1.9;color:var(--ink2);}
+  ul.clean li{margin:2px 0;}
+
+  /* ---- stats ---- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-bottom:30px;}
+  .stat{border:1px solid var(--line);border-radius:8px;padding:26px;text-align:center;background:var(--soft);}
+  .stat .n{font-size:42px;font-weight:800;color:var(--ink);line-height:1.1;}
+  .stat .l{font-size:16px;color:var(--gray);margin-top:8px;line-height:1.5;}
+
+  /* ---- cover ---- */
+  .cover{background:#1d1d1f;color:#fff;justify-content:center;padding:130px;}
+  .cover .eyebrow{color:#c89b86;}
+  .cover h1{font-size:78px;font-weight:800;line-height:1.32;letter-spacing:.01em;}
+  .cover h1 .a{color:#c89b86;}
+  .cover .rule{width:90px;height:5px;background:var(--accent);margin:42px 0;}
+  .cover .sub{font-size:27px;color:#cfccc4;line-height:1.85;font-weight:400;}
+  .cover .foot{margin-top:auto;display:flex;justify-content:space-between;
+    font-size:19px;color:#8f8c85;border-top:1px solid rgba(255,255,255,.16);padding-top:26px;}
+  .cover .foot strong{color:#fff;font-weight:600;}
+
+  /* ---- page footer ---- */
+  .pfoot{position:absolute;left:130px;right:130px;bottom:50px;display:flex;
+    justify-content:space-between;font-size:14px;color:#a9a69f;
+    border-top:1px solid var(--line);padding-top:12px;}
+
+  /* ---- toc ---- */
+  .toc{display:grid;grid-template-columns:1fr 1fr;gap:6px 70px;}
+  .toc .row{display:flex;align-items:baseline;gap:18px;padding:11px 4px;border-bottom:1px dashed var(--line);}
+  .toc .row b{color:var(--accent);font-weight:800;font-size:18px;width:26px;}
+  .toc .row .t{font-size:20px;font-weight:600;color:var(--ink);}
+  .toc .row .d{margin-left:auto;font-size:15px;color:var(--gray);}
+
+  /* ---- nav ui ---- */
+  #ui{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:18px;z-index:50;
+    background:rgba(20,20,19,.72);backdrop-filter:blur(8px);
+    padding:9px 18px;border-radius:40px;color:#fff;font-size:14px;
+    font-family:inherit;user-select:none;}
+  #ui button{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;
+    width:30px;height:30px;border-radius:50%;transition:background .2s;}
+  #ui button:hover{background:rgba(255,255,255,.16);}
+  #ui .count{min-width:62px;text-align:center;letter-spacing:.05em;}
+  .hint{position:fixed;top:18px;right:22px;color:#6f6d67;font-size:12px;z-index:50;}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 0 COVER -->
+  <section class="slide cover active">
+    <div class="eyebrow">YOUTUBE CHANNEL STRATEGY</div>
+    <h1>営業に<span class="a">"仕組み"</span>を<br>作るチャンネル。</h1>
+    <div class="rule"></div>
+    <div class="sub">営業顧問50名のネットワークを持つプロ集団が、リアルな営業を見せ、<br>中小企業・スタートアップの営業課題を解決する。</div>
+    <div class="foot"><div><strong>オニカナ様</strong>　YouTubeチャンネル 戦略提案書</div><div>2026.07 ／ <strong>合同会社Harbor</strong></div></div>
+  </section>
+
+  <!-- 1 TOC -->
+  <section class="slide">
+    <div class="eyebrow">CONTENTS</div>
+    <h1 class="title" style="font-size:40px;margin-bottom:40px;">目次</h1>
+    <div class="body">
+      <div class="toc">
+        <div class="row"><b>01</b><span class="t">市場分析と戦略の前提</span><span class="d">2段構えの設計</span></div>
+        <div class="row"><b>10</b><span class="t">タイトル設計の基本方針</span><span class="d">フック×SEO×便益</span></div>
+        <div class="row"><b>02</b><span class="t">チャンネルコンセプト設計</span><span class="d">空白地帯を狙う</span></div>
+        <div class="row"><b>11</b><span class="t">ショート動画への展開</span><span class="d">制作コストゼロ</span></div>
+        <div class="row"><b>03</b><span class="t">YouTubeの役割と導線設計</span><span class="d">営業活動の武器</span></div>
+        <div class="row"><b>12</b><span class="t">月間投稿プラン</span><span class="d">月4本／月6本</span></div>
+        <div class="row"><b>04</b><span class="t">コンテンツの4本柱</span><span class="d">インプとCVの分業</span></div>
+        <div class="row"><b>13</b><span class="t">初動で作るべき5本</span><span class="d">優先順位</span></div>
+        <div class="row"><b>05</b><span class="t">柱1：顧問ガチ営業ロープレ</span><span class="d">最強の入口</span></div>
+        <div class="row"><b>14</b><span class="t">成長フェーズ設計とKPI</span><span class="d">Phase 1〜3</span></div>
+        <div class="row"><b>06</b><span class="t">柱2：顧問インタビュー</span><span class="d">信頼構築</span></div>
+        <div class="row"><b>15</b><span class="t">アナリティクスの確認ポイント</span><span class="d">運用指標</span></div>
+        <div class="row"><b>07</b><span class="t">柱3：営業組織・営業戦略</span><span class="d">SEOで獲得</span></div>
+        <div class="row"><b>16</b><span class="t">検討事項への回答</span><span class="d">想定Q&A</span></div>
+        <div class="row"><b>08</b><span class="t">柱4：営業課題解決</span><span class="d">ナーチャリング</span></div>
+        <div class="row"><b>17</b><span class="t">全体サマリー</span><span class="d">1枚で振り返る</span></div>
+        <div class="row"><b>09</b><span class="t">サムネイル設計方針</span><span class="d">Z構造</span></div>
+        <div class="row" style="border:none"></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>02</span></div>
+  </section>
+
+  <!-- 2 SEC01 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">01</span><h2>市場分析と戦略の前提</h2>
+      <span class="lead">「営業顧問」をゴールに、検索ボリュームの大きい上位互換キーワードから視聴者を獲得する。</span></div>
+    <div class="body cols c2-7">
+      <div>
+        <h3>上位互換キーワードに目を向ける</h3>
+        <p style="margin-bottom:14px;">「営業顧問」単体はニッチで再生が伸びにくい。だが周辺キーワードまで広げると状況が変わる。</p>
+        <table>
+          <thead><tr><th>キーワード</th><th style="width:120px">ボリューム</th><th style="width:200px">見込み客との距離</th></tr></thead>
+          <tbody>
+            <tr><td>営業コツ／テレアポ コツ</td><td><span class="pill">大</span></td><td>やや遠い</td></tr>
+            <tr><td>営業組織／営業戦略</td><td><span class="pill">中</span></td><td>近い</td></tr>
+            <tr><td>営業代行／営業外注</td><td><span class="pill">中</span></td><td>非常に近い</td></tr>
+            <tr><td>BtoB 新規開拓</td><td><span class="pill">中</span></td><td>近い</td></tr>
+            <tr><td>スタートアップ 営業</td><td><span class="pill">小〜中</span></td><td>非常に近い</td></tr>
+            <tr><td>営業顧問</td><td><span class="pill">小</span></td><td>ど真ん中</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:26px;justify-content:center;">
+        <h3>戦略の核心：2つのルート</h3>
+        <div class="flow">
+          <div class="step"><div class="ico">1</div><div class="txt"><strong>ロープレで「広く」獲る</strong><span>「営業コツ」「テレアポ」など大ボリュームから幅広くリーチ</span></div></div>
+          <div class="step"><div class="ico">2</div><div class="txt"><strong>戦略・取材で「深く」獲る</strong><span>「営業組織」「営業代行」で経営者層を取り込む</span></div></div>
+        </div>
+        <div class="callout dark"><span class="label">結論</span><p>入口は広く、出口（CV）はターゲットど真ん中。<strong>この2段構えでニッチでも成長する</strong>。</p></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>03</span></div>
+  </section>
+
+  <!-- 3 SEC02a -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">02</span><h2>チャンネルコンセプト設計</h2>
+      <span class="lead">狙うのは、誰も取っていない「経営者向け・営業の仕組みづくり」の空白地帯。</span></div>
+    <div class="body cols c2">
+      <div style="display:flex;flex-direction:column;gap:26px;">
+        <div class="callout"><span class="label">コンセプト</span><p><strong>「営業に"仕組み"を作るチャンネル」</strong><br>営業顧問50人のネットワークを持つプロ集団が、リアルな営業を見せ、中小企業・スタートアップの営業課題を解決する。</p></div>
+        <h3>ポジショニング</h3>
+        <table>
+          <thead><tr><th>既存の市場</th><th style="width:200px">状況</th></tr></thead>
+          <tbody>
+            <tr><td>① 個人営業マン向け（トーク術系）</td><td>競合多数</td></tr>
+            <tr><td>② 経営者・営業責任者向け（仕組み系）</td><td><span class="em">空白地帯</span></td></tr>
+          </tbody>
+        </table>
+        <p>②を狙いつつ、①のボリュームをロープレで活用し②でCVさせる<span class="em">ハイブリッド戦略</span>。</p>
+      </div>
+      <div>
+        <h3>他チャンネルとの決定的な違い</h3>
+        <table>
+          <thead><tr><th>一般的な営業系</th><th>オニカナ様</th></tr></thead>
+          <tbody>
+            <tr><td>1人の講師が喋り続ける</td><td><strong>50名の現役顧問</strong>が登場</td></tr>
+            <tr><td>座学・スライド中心</td><td><strong>ガチのロープレ実演</strong></td></tr>
+            <tr><td>ノウハウだけで終わる</td><td>「来てほしい」→<strong>問い合わせ</strong></td></tr>
+            <tr><td>演者の実績が不透明</td><td>実績者が<strong>顔出し出演</strong></td></tr>
+          </tbody>
+        </table>
+        <div class="callout dark" style="margin-top:24px;"><p><strong>「本物のプロ50人が実際にやって見せる」</strong>──現状のYouTubeに存在しない唯一無二のフォーマット。</p></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>04</span></div>
+  </section>
+
+  <!-- 4 SEC02b -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">02</span><h2>チャンネル名・概要欄</h2>
+      <span class="lead">名称に「営業」を必ず含め、経営者層が検索・発見しやすくする。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>チャンネル名候補</h3>
+        <table>
+          <thead><tr><th>候補</th><th style="width:260px">ねらい</th></tr></thead>
+          <tbody>
+            <tr><td>オニカナ｜営業組織の作り方</td><td>経営者の検索意図ど真ん中</td></tr>
+            <tr><td>オニカナ｜営業の仕組みチャンネル</td><td>コンセプトを端的に表現</td></tr>
+            <tr><td>オニカナ｜営業顧問のプロが教える営業戦略</td><td>権威性＋SEOを両立</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>バナー・概要欄に入れる情報</h3>
+        <div class="callout"><ul class="clean">
+          <li>営業顧問ネットワーク50名保有</li>
+          <li>中小企業・スタートアップ向け営業支援</li>
+          <li>面談まで無料のマッチングサービス</li>
+          <li>問い合わせ・LINE登録の導線</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>05</span></div>
+  </section>
+
+  <!-- 5 SEC03 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">03</span><h2>YouTubeの役割と導線設計</h2>
+      <span class="lead">単体でリードを量産する装置ではなく、既存の営業活動を10倍強化する武器。</span></div>
+    <div class="body cols c2-7">
+      <div>
+        <h3>ゴールから逆算した導線</h3>
+        <div class="flow" style="gap:2px;">
+          <div class="step"><div class="ico">A</div><div class="txt"><strong>YouTube動画</strong><span>認知・教育・信頼構築</span></div></div>
+          <div class="arrow">▼</div>
+          <div class="step"><div class="ico">B</div><div class="txt"><strong>概要欄／動画内CTA</strong><span>次のアクションへ</span></div></div>
+          <div class="arrow">▼</div>
+          <div class="step"><div class="ico">C</div><div class="txt"><strong>LINE登録／問い合わせ</strong><span>リード獲得</span></div></div>
+          <div class="arrow">▼</div>
+          <div class="step"><div class="ico">D</div><div class="txt"><strong>無料面談</strong><span>顧問候補を2〜3名提案</span></div></div>
+          <div class="arrow">▼</div>
+          <div class="step"><div class="ico">E</div><div class="txt"><strong>成約</strong><span></span></div></div>
+        </div>
+      </div>
+      <div>
+        <h3>営業活動との併用シーン</h3>
+        <table>
+          <thead><tr><th style="width:170px">シーン</th><th>活用方法</th></tr></thead>
+          <tbody>
+            <tr><td>テレアポ後</td><td>ロープレ動画を案内 → 信頼獲得が加速</td></tr>
+            <tr><td>LinkedIn DM</td><td>動画リンク添付 → 開封率・返信率UP</td></tr>
+            <tr><td>紹介営業</td><td>事前教育が完了 → 商談時間短縮</td></tr>
+            <tr><td>問い合わせ対応</td><td>顧問取材を案内 → 面談前の理解度UP</td></tr>
+            <tr><td>採用</td><td>動画を見て応募 → ミスマッチ減少</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>06</span></div>
+  </section>
+
+  <!-- 6 SEC04 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">04</span><h2>コンテンツの4本柱</h2>
+      <span class="lead">柱1がインプレッションのエンジン、柱2・3・4がCV（問い合わせ）のエンジン。</span></div>
+    <div class="body cols c4" style="align-items:stretch;">
+      <div class="card"><h4>柱1<br>顧問ガチ営業ロープレ</h4><p class="role">インプ獲得・権威性の可視化</p><p class="tag">視聴者：広い<br>頻度：月2本</p></div>
+      <div class="card"><h4>柱2<br>顧問インタビュー</h4><p class="role">独自性・信頼構築</p><p class="tag">視聴者：経営者層<br>頻度：月1本</p></div>
+      <div class="card"><h4>柱3<br>営業組織・営業戦略</h4><p class="role">SEO獲得・認知拡大</p><p class="tag">視聴者：経営者層<br>頻度：月1本</p></div>
+      <div class="card"><h4>柱4<br>営業課題解決</h4><p class="role">教育・ナーチャリング</p><p class="tag">視聴者：経営者層<br>頻度：随時</p></div>
+    </div>
+    <div class="callout dark" style="margin-top:34px;"><p><strong>柱1で広く集めた視聴者を、柱2・3・4でターゲット層にスクリーニングしながらCVへ導く。</strong>入口と出口の役割を明確に分けるのがこの設計の肝。</p></div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>07</span></div>
+  </section>
+
+  <!-- 7 SEC05a -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">05</span><h2>柱1：顧問ガチ営業ロープレ</h2>
+      <span class="lead">チャンネル成長のエンジン。大きなキーワードを、唯一無二の絵面で獲りに行く。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>なぜこの企画が最強か</h3>
+        <table>
+          <tbody>
+            <tr><td style="width:230px">インプレッション獲得力</td><td class="score">◎</td><td>大ボリュームKWを狙える</td></tr>
+            <tr><td>独自性</td><td class="score">◎</td><td>プロのガチ実演は希少</td></tr>
+            <tr><td>権威性の可視化</td><td class="score">◎</td><td>実力が映像で一発で伝わる</td></tr>
+            <tr><td>エンタメ性</td><td class="score">◎</td><td>緊張感で視聴維持率が高い</td></tr>
+            <tr><td>量産性</td><td class="score">◎</td><td>50名で無限に回せる</td></tr>
+            <tr><td>サービス直結度</td><td class="score">◎</td><td>「教えてほしい」→問い合わせ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>動画の基本構成（12〜20分）</h3>
+        <table>
+          <thead><tr><th style="width:150px">時間</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>0〜2秒</td><td>衝撃シーン（驚き／即決／バッサリ断られ）</td></tr>
+            <tr><td>2〜7秒</td><td>ベネフィット提示（実績＋ガチ実演）</td></tr>
+            <tr><td>7〜15秒</td><td>好奇心（「プロは何が違う？」）</td></tr>
+            <tr><td>15秒〜1分</td><td>導入・設定説明＋肩書きテロップ</td></tr>
+            <tr><td>1〜15分</td><td>ロープレ本編（カット少・ポイント解説）</td></tr>
+            <tr><td>15〜18分</td><td>振り返り（真似できる点を3つに整理）</td></tr>
+            <tr><td>18〜20分</td><td>CTA（面談無料・概要欄から問い合わせ）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>08</span></div>
+  </section>
+
+  <!-- 8 SEC05b -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">05</span><h2>柱1：企画バリエーション／撮影</h2>
+      <span class="lead">人を変えるだけで無限に展開。初期は社内ロープレから現実的に始める。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>企画バリエーション</h3>
+        <table>
+          <thead><tr><th style="width:110px">型</th><th>タイトル例</th></tr></thead>
+          <tbody>
+            <tr><td>状況別</td><td>プロがテレアポをガチでやったら成功率が異次元だった</td></tr>
+            <tr><td>状況別</td><td>「検討します」の切り返しをガチ実演</td></tr>
+            <tr><td>業界別</td><td>SaaS営業のプロがオンライン商談を実演</td></tr>
+            <tr><td>対決</td><td>営業顧問 vs 新人営業マン／営業歴30年 vs 3年</td></tr>
+            <tr><td>逆張り</td><td>営業のプロでも断られる瞬間／100件リアル検証</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;font-size:18px;color:var(--gray)">対決・逆張りはクリック率と信憑性を同時に高める。</p>
+      </div>
+      <div>
+        <h3>撮影の進め方</h3>
+        <table>
+          <thead><tr><th style="width:150px">パターン</th><th>メリット</th></tr></thead>
+          <tbody>
+            <tr><td>A 社内ロープレ</td><td>コントロールしやすく複数テイク可</td></tr>
+            <tr><td>B リアル営業同行</td><td>圧倒的リアリティ（顧客許可が必要）</td></tr>
+            <tr><td>C 設定付き即興</td><td>アドリブ力が見えエンタメ性が高い</td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:22px;"><span class="label">顧問への依頼</span><p>まず「喋りが上手い・実績がわかりやすい」<strong>3〜5名から</strong>。出演が顧問自身のブランディングになると伝えると協力を得やすい。</p></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>09</span></div>
+  </section>
+
+  <!-- 9 SEC06 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">06</span><h2>柱2：顧問インタビュー</h2>
+      <span class="lead">50名のネットワークをコンテンツ化し、「顧問の質」を可視化する。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>企画例</h3>
+        <table>
+          <thead><tr><th>タイトル案</th><th style="width:140px">切り口</th></tr></thead>
+          <tbody>
+            <tr><td>年間売上30億を作ったプロに聞く「売れる組織の共通点」</td><td>実績型</td></tr>
+            <tr><td>元リクルート営業部長が語る「紹介営業の仕組み」</td><td>肩書き型</td></tr>
+            <tr><td>SaaS3社立ち上げた顧問の「失敗しないターゲット設定」</td><td>失敗談型</td></tr>
+            <tr><td>50人を見たプロが教える「成果が出る顧問の選び方」</td><td>選び方型</td></tr>
+            <tr><td>【密着】営業顧問は実際に何をしているのか</td><td>密着型</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>ロープレ × インタビューのセット運用</h3>
+        <div class="flow">
+          <div class="step"><div class="ico">1</div><div class="txt"><strong>ロープレで「この人すごい」</strong><span>実力を映像で証明</span></div></div>
+          <div class="arrow">▼</div>
+          <div class="step"><div class="ico">2</div><div class="txt"><strong>取材で「うちにも取り入れたい」</strong><span>考え方への共感</span></div></div>
+          <div class="arrow">▼</div>
+          <div class="step"><div class="ico">3</div><div class="txt"><strong>「この人に来てほしい」→問い合わせ</strong><span></span></div></div>
+        </div>
+        <div class="callout" style="margin-top:24px;"><p>1人の顧問から<strong>2本の動画</strong>。同じ撮影日に連続収録でき、制作効率も高い。</p></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>10</span></div>
+  </section>
+
+  <!-- 10 SEC07 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">07</span><h2>柱3：営業組織・営業戦略</h2>
+      <span class="lead">SEOで経営者・営業責任者を直接獲得し、視聴者をターゲット層へスクリーニング。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>企画例</h3>
+        <table>
+          <thead><tr><th>タイトル案</th><th style="width:190px">狙うキーワード</th></tr></thead>
+          <tbody>
+            <tr><td>中小企業の営業組織の作り方</td><td>社長が営業から抜ける</td></tr>
+            <tr><td>【2025年版】BtoB新規開拓の最強手法5選</td><td>BtoB 新規開拓</td></tr>
+            <tr><td>営業代行 vs 営業顧問 vs 自社採用</td><td>営業代行</td></tr>
+            <tr><td>CEOが営業を辞めるべきタイミング</td><td>スタートアップ 営業</td></tr>
+            <tr><td>「営業がいない会社」は何をしているのか</td><td>営業 仕組み化</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <div class="callout"><span class="label">特に重要な1本</span><p><strong>「営業代行 vs 営業顧問 vs 自社採用」</strong>。営業代行で検索する経営者はまさに見込み客。検索層を営業顧問へ引き込む導線として、<span class="em">チャンネルトップ固定</span>に最適。</p></div>
+        <h3>構成（10〜15分）</h3>
+        <table>
+          <tbody>
+            <tr><td style="width:140px">冒頭</td><td>問題提起→ベネフィット→権威性</td></tr>
+            <tr><td>本編</td><td>結論→理由→具体例→まとめ（論点テロップ）</td></tr>
+            <tr><td>CTA</td><td>LINE登録／問い合わせ誘導</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>11</span></div>
+  </section>
+
+  <!-- 11 SEC08 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">08</span><h2>柱4：営業課題解決</h2>
+      <span class="lead">具体的な営業課題を動画で解決し、問い合わせ前の信頼を最大化する。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>企画例</h3>
+        <table>
+          <thead><tr><th>タイトル案</th><th style="width:230px">ペルソナ</th></tr></thead>
+          <tbody>
+            <tr><td>営業を「属人化」から脱却させる3ステップ</td><td>社長が営業している中小企業</td></tr>
+            <tr><td>テレアポが全く取れない会社がまずやること</td><td>アウトバウンド苦戦中</td></tr>
+            <tr><td>営業未経験の社員を半年で一人前にする育成法</td><td>教育に困っている企業</td></tr>
+            <tr><td>「良い商品なのに売れない」を解決する営業設計</td><td>商品は強いが営業が弱い</td></tr>
+            <tr><td>営業KPIの正しい設定方法</td><td>追う数字／追わない数字</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <div class="callout dark"><span class="label">柱4の位置づけ</span><p>具体的な課題に答えることで「この会社は自分たちの状況を分かっている」という<strong>信頼を醸成</strong>。検索流入と、問い合わせ直前の<strong>後押し（ナーチャリング）</strong>の両方を担う。</p></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>12</span></div>
+  </section>
+
+  <!-- 12 SEC09 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">09</span><h2>サムネイル設計方針</h2>
+      <span class="lead">情報を4隅に置くZ構造。ダーク基調・顔出しで、信頼感と差別化を両立。</span></div>
+    <div class="body cols c3">
+      <div class="card"><h4>ロープレ</h4>
+        <ul><li><strong>左上</strong>：成功率92%／即決</li><li><strong>右上</strong>：肩書き「元○○本部長」</li><li><strong>左下</strong>：このトークを真似するだけ</li><li><strong>右下</strong>：電話中・商談中の臨場感</li></ul></div>
+      <div class="card"><h4>インタビュー</h4>
+        <ul><li><strong>左上</strong>：売上0→30億</li><li><strong>右上</strong>：肩書き「元○○業界部長」</li><li><strong>左下</strong>：売れる組織の作り方</li><li><strong>右下</strong>：顧問の表情（真剣／笑顔）</li></ul></div>
+      <div class="card"><h4>営業戦略</h4>
+        <ul><li><strong>左上</strong>：9割が間違ってる</li><li><strong>右上</strong>：BtoB営業／新規開拓</li><li><strong>左下</strong>：正解の営業体制</li><li><strong>右下</strong>：代表の真剣な表情</li></ul></div>
+    </div>
+    <div class="callout" style="margin-top:30px;"><span class="label">トーン</span><p>背景は<strong>ダークネイビー／黒系</strong>、文字は<strong>白・黄</strong>で視認性確保、<strong>顔は必ず入れる</strong>。ロープレは実カットで一般チャンネルと絵面を差別化。対決は<strong>VS構図</strong>。</p></div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>13</span></div>
+  </section>
+
+  <!-- 13 SEC10 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">10</span><h2>タイトル設計の基本方針</h2>
+      <span class="lead">フック × SEOキーワード × ベネフィット。30〜35字に収める。</span></div>
+    <div class="body cols c2">
+      <div>
+        <div class="callout dark"><span class="label">構造テンプレート</span><p style="font-size:26px;"><strong>【フックワード】＋【SEOキーワード】＋【ベネフィット】</strong></p></div>
+        <h3 style="margin-top:30px;">ルール</h3>
+        <ul class="clean">
+          <li>30〜35文字以内に収める</li>
+          <li>「営業／組織／BtoB／新規開拓／テレアポ／顧問」などSEO語を必ず含む</li>
+          <li>経営者が反応する語（属人化・仕組み化・売上◯倍）</li>
+          <li>サムネで伝えきれない便益を補完</li>
+        </ul>
+      </div>
+      <div>
+        <h3>具体例</h3>
+        <table>
+          <tbody>
+            <tr><td>営業のプロがテレアポをガチでやったら成功率が異次元だった</td></tr>
+            <tr><td>営業代行に月100万払うな｜中小企業の正しい営業外注戦略</td></tr>
+            <tr><td>年間売上30億の営業組織を作った男に全部聞いた</td></tr>
+            <tr><td>営業顧問 vs 新人営業マン｜テレアポ対決したら差がエグかった</td></tr>
+            <tr><td>社長が営業を辞めたら売上が3倍になった理由</td></tr>
+            <tr><td>【完全解説】営業顧問とは？費用・選び方・効果を徹底比較</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>14</span></div>
+  </section>
+
+  <!-- 14 SEC11 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">11</span><h2>ショート動画への展開</h2>
+      <span class="lead">ロープレはショートと相性抜群。制作コストほぼゼロでチャンネルを拡張。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>切り出しパターン</h3>
+        <table>
+          <thead><tr><th>切り口</th><th style="width:150px">元ネタ</th></tr></thead>
+          <tbody>
+            <tr><td>プロの切り返しが神すぎた（ベスト15秒）</td><td>ロープレ本編</td></tr>
+            <tr><td>断られた瞬間→秒で切り返す営業顧問</td><td>ロープレ本編</td></tr>
+            <tr><td>営業歴30年 vs 3年、この差見てください</td><td>対決ロープレ</td></tr>
+            <tr><td>年商30億作った男のテレアポ、冒頭10秒が違う</td><td>ロープレ本編</td></tr>
+            <tr><td>断られない最初の一言</td><td>振り返り解説</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <div class="callout"><span class="label">長尺への誘導</span><p>ショート末尾に<strong>本編サムネ画像をベタ貼り</strong>し「フルはチャンネルトップから」。左下リンクは気づかれにくいため、<span class="em">サムネ直貼りのほうが転換率が高い</span>。</p></div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>15</span></div>
+  </section>
+
+  <!-- 15 SEC12 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">12</span><h2>月間投稿プラン</h2>
+      <span class="lead">推奨は月4本。リソースが許せば月6本でロープレ比率を高める。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>月4本（推奨）</h3>
+        <table>
+          <thead><tr><th style="width:90px">週</th><th style="width:150px">柱</th><th>企画例</th></tr></thead>
+          <tbody>
+            <tr><td>第1週</td><td>① ロープレ</td><td>テレアポ ガチ実演</td></tr>
+            <tr><td>第2週</td><td>② 取材</td><td>売れる組織の共通点</td></tr>
+            <tr><td>第3週</td><td>③ 戦略</td><td>営業代行 vs 顧問 vs 採用</td></tr>
+            <tr><td>第4週</td><td>① ロープレ</td><td>顧問 vs 新人営業マン</td></tr>
+          </tbody>
+        </table>
+        <div class="callout" style="margin-top:22px;"><span class="label">ショート</span><p>ロープレから切り出し<strong>週2〜3本</strong>。制作コストはほぼゼロ。</p></div>
+      </div>
+      <div>
+        <h3>月6本（理想）</h3>
+        <table>
+          <thead><tr><th style="width:90px">週</th><th style="width:170px">柱</th><th>企画</th></tr></thead>
+          <tbody>
+            <tr><td>第1週</td><td>① ロープレ</td><td>テレアポ実演</td></tr>
+            <tr><td>第2週</td><td>② 取材</td><td>顧問A</td></tr>
+            <tr><td>第3週</td><td>① ロープレ（対決）</td><td>顧問 vs 新人</td></tr>
+            <tr><td>第4週</td><td>③ 戦略</td><td>BtoB新規開拓</td></tr>
+            <tr><td>第5週</td><td>① ロープレ</td><td>「検討します」切り返し</td></tr>
+            <tr><td>第6週</td><td>② 取材</td><td>顧問B</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>16</span></div>
+  </section>
+
+  <!-- 16 SEC13 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">13</span><h2>初動で作るべき5本</h2>
+      <span class="lead">最初の5本で「絵面の新しさ」と「顧問の質」を示し、初期評価を上げる。</span></div>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:80px">優先</th><th>企画</th><th style="width:170px">柱</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr><td class="score">★1</td><td>営業顧問がテレアポをガチでやったら○○だった</td><td>① ロープレ</td><td>インプ最大化。初手で絵面の新しさを示す</td></tr>
+          <tr><td class="score">★2</td><td>営業代行 vs 営業顧問 vs 自社採用｜完全比較</td><td>③ 戦略</td><td>検討層ど真ん中。トップ固定候補</td></tr>
+          <tr><td class="score">★3</td><td>顧問インタビュー第1弾</td><td>② 取材</td><td>最もインパクトある実績の顧問で質を証明</td></tr>
+          <tr><td class="score">★4</td><td>営業顧問 vs 新人営業マン｜テレアポ対決</td><td>① ロープレ</td><td>対決でクリック率・維持率を獲る</td></tr>
+          <tr><td class="score">★5</td><td>成果が出る顧問の選び方</td><td>④ 課題解決</td><td>サービス理解＋代表の権威性</td></tr>
+        </tbody>
+      </table>
+      <div class="callout dark" style="margin-top:30px;"><p><strong>★1と★3は同じ顧問で同日撮影</strong>すると効率的。ロープレで実力、取材で考え方──このセットが初動から差別化を生む。</p></div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>17</span></div>
+  </section>
+
+  <!-- 17 SEC14 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">14</span><h2>成長フェーズ設計とKPI</h2>
+      <span class="lead">ロープレで認知 → 取材・戦略でCV → シリーズ化で横展開。</span></div>
+    <div class="body cols c3">
+      <div class="phase">
+        <div class="ph"><div class="t">Phase 1</div><div class="d">1〜3ヶ月｜認知を爆発</div></div>
+        <div class="pb">
+          <ul><li>ロープレ中心でインプ最大化</li><li>取材・戦略も混ぜ経営者流入を確保</li><li>ショート切り出し開始</li></ul>
+          <table><tbody>
+            <tr><td>平均視聴時間</td><td>5分↑</td></tr>
+            <tr><td>新規/リピーター差</td><td>5%以内</td></tr>
+            <tr><td>平均再生</td><td>1,000〜5,000</td></tr>
+            <tr><td>登録者</td><td>300〜500</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="ph"><div class="t">Phase 2</div><div class="d">4〜6ヶ月｜CVを取る</div></div>
+        <div class="pb">
+          <ul><li>取材・戦略で経営者へスクリーニング</li><li>「すごい→来てほしい→問い合わせ」が回る</li><li>営業現場での動画活用を本格運用</li></ul>
+          <table><tbody>
+            <tr><td>経由問い合わせ</td><td>月3〜5件</td></tr>
+            <tr><td>平均再生</td><td>3,000〜10,000</td></tr>
+            <tr><td>登録者</td><td>1,000〜2,000</td></tr>
+            <tr><td>動画活用率</td><td>80%以上</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="ph"><div class="t">Phase 3</div><div class="d">7ヶ月〜｜横展開</div></div>
+        <div class="pb">
+          <ul><li>ロープレをシリーズ化（業界・状況・対決）</li><li>ショート大量投稿→長尺へ誘導強化</li><li>取材アーカイブが「顧問カタログ」化</li><li>「動画を見て連絡」が増加</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>18</span></div>
+  </section>
+
+  <!-- 18 SEC15 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">15</span><h2>アナリティクスの確認ポイント</h2>
+      <span class="lead">運用フェーズで継続的に見る指標と判断基準。</span></div>
+    <div class="body cols c2">
+      <div>
+        <h3>最重要指標</h3>
+        <table>
+          <thead><tr><th>指標</th><th style="width:230px">判断基準</th></tr></thead>
+          <tbody>
+            <tr><td>新規 vs リピーターの視聴時間差</td><td>5%以内なら良好。大きければ台本・構成を見直す</td></tr>
+            <tr><td>トラフィックソース内訳</td><td>ブラウジング・検索・関連動画のバランス</td></tr>
+            <tr><td>関連動画の流入元</td><td>どの動画から来るかでAIの認識を把握</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>ロープレの離脱ポイント分析</h3>
+        <table>
+          <thead><tr><th>よくある離脱</th><th style="width:230px">対処</th></tr></thead>
+          <tbody>
+            <tr><td>前振り説明が長すぎる</td><td>早く本編を見せる</td></tr>
+            <tr><td>振り返り解説が冗長</td><td>ポイントを3つに絞る</td></tr>
+            <tr><td>話の展開が唐突</td><td>ストーリーの筋を確認</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:18px;font-size:18px;color:var(--gray)">新規とリピーターの差が開く区間に、離脱の原因がある。</p>
+      </div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>19</span></div>
+  </section>
+
+  <!-- 19 SEC16 -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">16</span><h2>検討事項への回答</h2>
+      <span class="lead">想定される論点に、あらかじめお答えします。</span></div>
+    <div class="body cols c2" style="grid-template-rows:1fr 1fr;">
+      <div class="callout"><span class="label">Q. 営業顧問市場で成立する？</span><p>成立する。ロープレで大KWからインプを獲得し、取材・戦略で経営者をCVさせる<span class="em">2段構え</span>でニッチでもワークする。</p></div>
+      <div class="callout"><span class="label">Q. 採用とリード獲得の両立は？</span><p>ロープレが両方を兼ねる。見込み客は「入れたい→問い合わせ」、顧問候補は「登録したい→応募」。</p></div>
+      <div class="callout"><span class="label">Q. 個人営業マンが増えすぎない？</span><p>初期は広めが成長を加速しむしろプラス。Phase2以降で比率を調整。最終CV層は経営者に一致する。</p></div>
+      <div class="callout"><span class="label">Q. 社内にマーケ人材がいない</span><p>制作は外部で回し、社内は<span class="em">「動画リンクを営業で添付するルール」</span>の浸透だけでよい。</p></div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書</span><span>20</span></div>
+  </section>
+
+  <!-- 20 SUMMARY -->
+  <section class="slide">
+    <div class="sec-head"><span class="no">17</span><h2>全体サマリー</h2>
+      <span class="lead">入口は広く、出口はど真ん中。営業活動を10倍にする武器。</span></div>
+    <div class="body">
+      <div class="stats">
+        <div class="stat"><div class="n">4本柱</div><div class="l">ロープレ／取材／戦略／課題解決</div></div>
+        <div class="stat"><div class="n">月4本</div><div class="l">ロープレ2＋取材1＋戦略/課題1</div></div>
+        <div class="stat"><div class="n">月3〜5件</div><div class="l">Phase2以降の経由問い合わせ</div></div>
+      </div>
+      <table style="font-size:17px;">
+        <tbody>
+          <tr><td style="width:200px"><strong>コンセプト</strong></td><td>「営業に仕組みを作るチャンネル」── 50名の営業顧問ネットワークを持つプロ集団が発信</td></tr>
+          <tr><td><strong>ポジション</strong></td><td>経営者向けの「営業の仕組みづくり」領域。ロープレで広く認知→取材・戦略で深くCV</td></tr>
+          <tr><td><strong>最大の武器</strong></td><td>ロープレ × インタビューの組み合わせ（他チャンネルが真似できない）</td></tr>
+          <tr><td><strong>初動の1本目</strong></td><td>営業顧問がテレアポをガチでやったら○○だった</td></tr>
+          <tr><td><strong>成功の定義</strong></td><td>月3〜5件のYouTube経由問い合わせ（Phase2以降）</td></tr>
+        </tbody>
+      </table>
+      <div class="callout dark" style="margin-top:26px;text-align:center;"><p style="font-size:24px;"><strong>本物の営業のプロ50人が、実際にやって見せる。これはYouTube上に存在しない唯一無二のチャンネル。</strong></p></div>
+    </div>
+    <div class="pfoot"><span>オニカナ様 YouTube戦略提案書 ／ 合同会社Harbor</span><span>21</span></div>
+  </section>
+
+</div>
+
+<div class="hint">← → / Space でめくる</div>
+<div id="ui">
+  <button id="prev">‹</button>
+  <span class="count"><span id="cur">1</span> / <span id="total">21</span></span>
+  <button id="next">›</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const stage = document.getElementById('stage');
+  const curEl = document.getElementById('cur');
+  document.getElementById('total').textContent = slides.length;
+  let i = 0;
+
+  function fit(){
+    const s = Math.min(window.innerWidth/1920, window.innerHeight/1080);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  }
+  function show(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,k)=>s.classList.toggle('active', k===i));
+    curEl.textContent = i+1;
+    location.hash = i+1;
+  }
+  window.addEventListener('resize', fit);
+  document.getElementById('next').onclick = ()=>show(i+1);
+  document.getElementById('prev').onclick = ()=>show(i-1);
+  document.addEventListener('keydown', e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1);}
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(i-1);}
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(slides.length-1);
+  });
+  let wheelLock=false;
+  window.addEventListener('wheel', e=>{
+    if(wheelLock) return;
+    if(Math.abs(e.deltaY)<24) return;
+    wheelLock=true; show(i + (e.deltaY>0?1:-1));
+    setTimeout(()=>wheelLock=false, 600);
+  }, {passive:true});
+  let tx=0;
+  window.addEventListener('touchstart', e=>tx=e.touches[0].clientX, {passive:true});
+  window.addEventListener('touchend', e=>{
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>50) show(i + (dx<0?1:-1));
+  }, {passive:true});
+
+  const h = parseInt(location.hash.replace('#',''));
+  fit(); show(isNaN(h)?0:h-1);
+</script>
+</body>
+</html>
